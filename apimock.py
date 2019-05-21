@@ -12,6 +12,7 @@
 import argparse
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import os
+import ssl
 
 import pdb
 
@@ -28,10 +29,14 @@ class check_directory(argparse.Action):
 parser = argparse.ArgumentParser(description='ApiMock: Quickly mock back-end responses from local files\n')
 parser.add_argument('-d', '--directory', required=True, help='Directory containing requests and responses', action=check_directory)
 parser.add_argument('-s', '--server', nargs='?', default='127.0.0.1', help='Host for the server to run on. Ex: 192.168.1.10')
-parser.add_argument('-p', '--port', nargs='?', default=3000, help='Port for the server to listen on. Default=3000')
+parser.add_argument('-p', '--port', nargs='?', default=3000, help='Port for the server to listen on. Default=3000', type=int)
 parser.add_argument('-m', '--mode', nargs='?', default='lax', help='Modes. Either strict or lax. Default lax')
+parser.add_argument('-tls', nargs='?', type=bool, default=False, help='Enforce TLS. Default false')
+parser.add_argument('-k', '--keyfile', nargs='?', default=None, help='Keyfile for TLS')
+parser.add_argument('-c', '--certfile', nargs='?', default=None, help='Keyfile for TLS')
 
 args = parser.parse_args()
+pdb.set_trace()
 
 '''
 	Iterates through all of the files in the specified directory with the .req and .resp extension
@@ -134,4 +139,6 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 			self.wfile.write(b'ApiMock: Path not found')
 
 httpd = HTTPServer((args.server, args.port), SimpleHTTPRequestHandler)
+if (args.tls and args.keyfile and args.certfile):
+	httpd.socket = ssl.wrap_socket (httpd.socket, keyfile=args.keyfile, certfile=args.certfile, cert_reqs=ssl.CERT_NONE, server_side=True, ssl_version=ssl.PROTOCOL_TLSv1_2)
 httpd.serve_forever()

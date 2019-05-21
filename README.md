@@ -18,3 +18,4 @@ Quickly mock up APIs through raw HTTP requests/responses to test front end valid
 
 - Will be implmenting Strict mode so that the routing can be more exact. This will allow users to send GET and POST requests to the same endpoint and be able to mock different responses. This will be an option that can be selected.
 - Clean up code
+- Add TLS support so that https sites can be modified too
