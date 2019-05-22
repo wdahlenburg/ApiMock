@@ -14,8 +14,6 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import os
 import ssl
 
-import pdb
-
 class check_directory(argparse.Action):
 	def __call__(self, parser, namespace, values, option_string=None):
 		prospective_dir=values
@@ -36,7 +34,6 @@ parser.add_argument('-k', '--keyfile', nargs='?', default=None, help='Keyfile fo
 parser.add_argument('-c', '--certfile', nargs='?', default=None, help='Keyfile for TLS')
 
 args = parser.parse_args()
-pdb.set_trace()
 
 '''
 	Iterates through all of the files in the specified directory with the .req and .resp extension
