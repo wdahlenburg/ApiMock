@@ -198,8 +198,9 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
     # Handle GET requests
     def do_GET(self):
-        if self.path in ROUTES.keys():
-            response = get_response(ARGS.directory + '/' + ROUTES[self.path])
+        prefix = ROUTES['GET'] if ARGS.mode == 'strict' else ROUTES
+        if self.path in prefix.keys():
+            response = get_response(ARGS.directory + '/' + prefix[self.path])
             self.send_response(response['status_code'])
             for header in response['headers'].keys():
                 if header.lower() == 'server':
@@ -217,8 +218,9 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
     # Handle POST requests
     def do_POST(self):
-        if self.path in ROUTES.keys():
-            response = get_response(ARGS.directory + '/' + ROUTES[self.path])
+        prefix = ROUTES['POST'] if ARGS.mode == 'strict' else ROUTES
+        if self.path in prefix.keys():
+            response = get_response(ARGS.directory + '/' + prefix[self.path])
             self.send_response(response['status_code'])
             for header in response['headers'].keys():
                 if header.lower() == 'server':
