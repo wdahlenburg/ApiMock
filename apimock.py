@@ -3,11 +3,11 @@
 # ApiMock (@wdahlenb)
 
 '''
-	Quickly mock up a back-end API using raw HTTP request/responses. Change the results on the fly.
+    Quickly mock up a back-end API using raw HTTP request/responses. Change the results on the fly.
 
-	Lax mode: Whatever the URL is we will give the response. HTTP verb doesn't matter.
+    Lax mode: Whatever the URL is we will give the response. HTTP verb doesn't matter.
 
-	Strict mode: VERB + URL must match
+    Strict mode: VERB + URL must match
 
 '''
 
@@ -111,15 +111,15 @@ class CheckDirectory(argparse.Action):
 
 
 '''
-	Iterates through all of the files in the specified directory with the .req and .resp extension
+    Iterates through all of the files in the specified directory with the .req and .resp extension
 
-	Generates a valid route for a req and response. The basename must be the same.
+    Generates a valid route for a req and response. The basename must be the same.
 
-	test1.req matches with test1.resp
-	test2.req matches with test2.resp
-	etc
+    test1.req matches with test1.resp
+    test2.req matches with test2.resp
+    etc
 
-	* Not intended to perform recursion through folders
+    * Not intended to perform recursion through folders
 '''
 def generate_lax_routes(directory):
     files = os.listdir(directory)
@@ -131,21 +131,36 @@ def generate_lax_routes(directory):
     for req in reqs:
         name = req.split('.req')[0]
         if name + '.resp' in resps:
-            path = get_path(directory + '/' + req)
+            _, path = get_details(directory + '/' + req)
             routes[path] = name + '.resp'
 
     return routes
 
 # Ensure that the verb and path are correct
 def generate_strict_routes(directory):
-    # TODO
-    return {}
+    files = os.listdir(directory)
+    reqs = [f for f in files if f.endswith('.req')]
+    resps = [f for f in files if f.endswith('.resp')]
 
-# Get the proper url path from the request file
-def get_path(req_file):
+    routes = {'GET': {}, 'POST': {}}
+
+    for req in reqs:
+        name = req.split('.req')[0]
+        if name + '.resp' in resps:
+            verb, path = get_details(directory + '/' + req)
+            if verb.upper() == 'GET':
+                routes['GET'][path] = name + '.resp'
+            elif verb.upper() == 'POST':
+                routes['POST'][path] = name + '.resp'
+
+    return routes
+
+# Get the proper url path and verb from the request file
+def get_details(req_file):
     with open(req_file) as file:
         first_line = file.readline()
-        return first_line.split()[1]
+        split_values = first_line.split()
+        return split_values[0], split_values[1]
 
 # Get the correct status code, headers, and body from the proper response file
 def get_response(resp_file):
