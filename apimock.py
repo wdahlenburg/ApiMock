@@ -173,14 +173,17 @@ def get_response(resp_file):
 
             lines = file.readlines()
             headers_end_index = lines.index('\n')
+
+            data['body'] = '\n'.join(lines[headers_end_index + 1:])
+
             for line_index in range(headers_end_index):
                 header_line = lines[line_index].split(':')
                 key = header_line[0]
                 val = header_line[1].strip()
                 if key.lower() not in blacklist:
                     data['headers'][key] = val
-
-            data['body'] = '\n'.join(lines[headers_end_index + 1:])
+                    if key.lower() == 'content-length':
+                        data['headers'][key] = len(data['body'])
     except BaseException:
         pass
 
