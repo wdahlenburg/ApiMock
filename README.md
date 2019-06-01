@@ -21,10 +21,16 @@ Quickly mock up APIs through raw HTTP requests/responses to test front end valid
 8. `sudo python3 ./apimock.py -d test/ -tls=true -c server.crt -k server.key -p 443`
 9. To verify visit https://myMockedDomain.com and ensure you don't get certificate errors. 
 
+#### Options
+| Argument      | Values           | Description  |
+| ------------- |:-------------:| ------------:|
+| -d / --directory     | * | Directory accessible by OS that stores the request and response pairs |
+| -s / --server | Any IPv4 address owned by host | Server IP to host ApiMock |
+| -p / --port | 0-65535 | Any port to run ApiMock on |
+| -m / --mode | lax / strict | Mode to run for ApiMock. Lax mode only cares about the path. Strict mode supports http verb and path |
+| -tls | true / false | Enable TLS |
+| -k / --keyfile | server.key | PEM based server key for TLS |
+| -c / --certificate | server.crt | PEM based certificate for TLS |
+
 ## Known Issues
-
 - The server header is fixed in either the SimpleHTTPRequestHandler or BaseHTTPRequestHandler and the libraries don't like modifying this on the fly. 
-
-## Progress
-
-- Will be implmenting Strict mode so that the routing can be more exact. This will allow users to send GET and POST requests to the same endpoint and be able to mock different responses. This will be an option that can be selected.
